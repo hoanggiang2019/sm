@@ -9,14 +9,14 @@ export default function Home() {
                 <title>Next.js</title>
             </Head>
             <div className={"flex justify-center items-center h-screen"}>
-                <Card color="transparent" shadow={false}>
+                <Card color="transparent" className={"shadow-2xl"}>
                     <Typography variant="h4" color="blue-gray" className={"text-center"}>
                         Login Account
                     </Typography>
                     <Typography color="gray" className="mt-1 font-normal text-center">
                         Welcome to back!
                     </Typography>
-                    <form className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
+                    <form className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96 p-5">
                         <div className="mb-1 flex flex-col gap-6">
                             <Typography variant="h6" color="blue-gray" className="-mb-3">
                                 Username
