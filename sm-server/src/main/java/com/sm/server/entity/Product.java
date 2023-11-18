@@ -22,4 +22,12 @@ public class Product {
     @NotBlank
     private String name;
 
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @Column
+    private String description;
+
 }

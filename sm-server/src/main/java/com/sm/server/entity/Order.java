@@ -1,14 +1,12 @@
 package com.sm.server.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.antlr.v4.runtime.misc.NotNull;
 
-import java.sql.Date;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -21,30 +19,34 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "shipper_id", referencedColumnName = "id")
-    @NotBlank
     @NotNull
     private User shipper;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @NotBlank
+    @OneToOne(fetch = FetchType.EAGER)
     @NotNull
-    @JoinTable(
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "orderdetail_id")
-    )
-    private List<OrderDetail> orderDetails;
+    private Product product;
+
+    @Column(name = "quantity")
+    @NotNull
+    private Integer quantity;
+
+    @Column(name = "price")
+    @NotNull
+    private Double price;
+
+    @Column(name = "total_cash")
+    private Double totalCash;
 
     @Column
     private Integer status;
 
-    @Column
-    private Double totalCash;
-
     @Column(name = "created_time")
     @NotNull
-    @NotBlank
-    private Date createdTime;
+    private LocalDateTime createdTime;
+
+    @Column(name = "confirm_time")
+    private LocalDateTime confirmTime;
 
 }

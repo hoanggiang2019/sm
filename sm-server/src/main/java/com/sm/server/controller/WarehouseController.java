@@ -1,6 +1,5 @@
 package com.sm.server.controller;
 
-
 import com.sm.server.entity.Warehouse;
 import com.sm.server.service.WarehouseService;
 import jakarta.validation.Valid;
@@ -29,7 +28,7 @@ public class WarehouseController {
     }
 
     @DeleteMapping("/deleteProduct/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable(name = ("id")) Long id) {
+    public ResponseEntity<String> deleteProduct(@PathVariable(name = ("id")) Long id) throws Exception {
 
         service.deleteProduct(id);
 

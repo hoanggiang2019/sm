@@ -1,6 +1,5 @@
 package com.sm.server.controller;
 
-
 import com.sm.server.entity.Order;
 import com.sm.server.service.OrderService;
 import jakarta.validation.Valid;
@@ -8,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/order")
@@ -17,12 +18,54 @@ public class OrderController {
     @Autowired
     OrderService service;
 
+    @GetMapping("/getOrder/{orderId}")
+    public ResponseEntity<String> addOrder(@PathVariable(name = "orderId") Long orderId) throws Exception {
+
+        service.getOrder(orderId);
+
+        return ResponseEntity.ok("Add product successfully");
+
+    }
+
+    @GetMapping("/getAllOrder")
+    public ResponseEntity<List<Order>> getAllOrder() throws Exception {
+
+        List<Order> orders = service.getAllOrder();
+
+        if (orders.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(orders);
+
+    }
+
+    @GetMapping("/getOrdersOfShipper/{shipperId}")
+    public ResponseEntity<List<Order>> getOrdersOfShipper(@PathVariable(name = "shipperId") Long shipperId) throws Exception {
+
+        List<Order> orders = service.getOrdersOfShipper(shipperId);
+
+        if (orders.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(orders);
+
+    }
+
     @PostMapping("/addOrder")
-    public ResponseEntity<String> addOrder(@Valid @RequestBody Order order) {
+    public ResponseEntity<String> addOrder(@Valid @RequestBody Order order) throws Exception {
 
         service.addOrder(order);
 
         return ResponseEntity.ok("Add product successfully");
+
+    }
+
+    @PostMapping("/returnOrder/{orderId}")
+    public ResponseEntity<String> returnOrder(@PathVariable(name = "orderId") Long orderId) throws Exception {
+
+        service.returnOrder(orderId);
+
+        return ResponseEntity.ok("Return order successfully");
 
     }
 
@@ -62,5 +105,4 @@ public class OrderController {
         return ResponseEntity.ok("Add product successfully");
 
     }
-
 }
