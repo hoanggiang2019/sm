@@ -2,7 +2,6 @@ package com.sm.server.entity;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,9 +17,9 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(unique = true, length = 255, nullable = false)
-    @NotBlank
     private String name;
+
+    private long volume;
 
 
     @ManyToOne

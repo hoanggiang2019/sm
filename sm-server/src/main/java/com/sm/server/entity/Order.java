@@ -1,23 +1,19 @@
 package com.sm.server.entity;
 
+import com.sm.server.core.entities.BaseEntity;
+import com.sm.server.core.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "orders")
-public class Order {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Order extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "shipper_id", referencedColumnName = "id")
@@ -41,12 +37,5 @@ public class Order {
 
     @Column
     private Integer status;
-
-    @Column(name = "created_time")
-    @NotNull
-    private LocalDateTime createdTime;
-
-    @Column(name = "confirm_time")
-    private LocalDateTime confirmTime;
 
 }

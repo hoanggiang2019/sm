@@ -1,10 +1,8 @@
 package com.sm.server.controller;
 
-
 import com.sm.server.entity.Category;
 import com.sm.server.service.CategoryService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +12,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/category")
 @Validated
+@CrossOrigin()
 public class CategoryController {
 
-    @Autowired
-    CategoryService service;
+    private final CategoryService service;
+
+    public CategoryController(CategoryService service) {
+        this.service = service;
+    }
 
     @PostMapping("/addCategory")
     public ResponseEntity<String> addCategory(@Valid @RequestBody Category category) throws Exception {
@@ -37,8 +39,8 @@ public class CategoryController {
 
     }
 
-    @GetMapping("/getAllCategories")
-    public ResponseEntity<List<Category>> getAllCategories() throws Exception {
+    @GetMapping("/getAll")
+    public ResponseEntity<List<Category>> getAllCategories() {
 
         List<Category> categories = service.getAllCategories();
 
@@ -50,7 +52,7 @@ public class CategoryController {
     }
 
     @GetMapping("/getCategory/{categoryId}")
-    public ResponseEntity<Category> getCategory(@PathVariable(name = "categoryId") Long categoryId) throws Exception {
+    public ResponseEntity<Category> getCategory(@PathVariable(name = "categoryId") Long categoryId) {
 
         Category category = service.getCategory(categoryId);
 

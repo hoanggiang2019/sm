@@ -2,17 +2,16 @@ package com.sm.server.service;
 
 import com.sm.server.common.Constants;
 import com.sm.server.common.CustomException;
+import com.sm.server.core.entities.User;
+import com.sm.server.core.repositories.UserRepository;
 import com.sm.server.entity.Order;
-import com.sm.server.entity.User;
 import com.sm.server.entity.Warehouse;
 import com.sm.server.repository.OrderRepository;
-import com.sm.server.repository.UserRepository;
 import com.sm.server.repository.WarehouseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,8 +43,6 @@ public class OrderService {
         Double totalCashOrder = order.getPrice() * order.getQuantity();
 
         order.setTotalCash(totalCashOrder);
-
-        order.setCreatedTime(LocalDateTime.now());
 
         repository.save(order);
 
@@ -90,8 +87,6 @@ public class OrderService {
             existedOrder.setPrice(updateOrder.getPrice());
 
             existedOrder.setTotalCash(updateOrder.getPrice() * updateOrder.getQuantity());
-
-            existedOrder.setCreatedTime(updateOrder.getCreatedTime());
 
             repository.save(existedOrder);
 

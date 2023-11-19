@@ -1,5 +1,6 @@
 package com.sm.server.entity;
 
+import com.sm.server.core.entities.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -13,14 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "categories")
-public class Category {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-
+@Table(name = "category")
+public class Category extends BaseEntity {
     @Column
     @NotNull
     private String name;
@@ -35,10 +30,4 @@ public class Category {
 
     @Column
     private String description;
-
-    public Category(Long id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-    }
 }
