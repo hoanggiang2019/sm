@@ -1,16 +1,16 @@
-package com.sm.security.service;
+package com.sm.server.core.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sm.security.auth.AuthenticationResponse;
-import com.sm.security.dto.RoleDto;
-import com.sm.security.dto.UserDto;
-import com.sm.security.entities.Role;
-import com.sm.security.entities.Token;
-import com.sm.security.entities.TokenType;
-import com.sm.security.entities.User;
-import com.sm.security.repositories.TokenRepository;
-import com.sm.security.repositories.UserRepository;
-import com.sm.security.security.JwtService;
+import com.sm.server.core.auth.AuthenticationResponse;
+import com.sm.server.core.dto.RoleDto;
+import com.sm.server.core.dto.UserDto;
+import com.sm.server.core.entities.Role;
+import com.sm.server.core.entities.Token;
+import com.sm.server.core.entities.TokenType;
+import com.sm.server.core.entities.User;
+import com.sm.server.core.repositories.TokenRepository;
+import com.sm.server.core.repositories.UserRepository;
+import com.sm.server.core.security.JwtService;
 import com.sm.server.service.GenericService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

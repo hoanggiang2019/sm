@@ -1,6 +1,6 @@
-package com.sm.security.auditing;
+package com.sm.server.core.auditing;
 
-import com.sm.security.entities.User;
+import com.sm.server.core.entities.User;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;

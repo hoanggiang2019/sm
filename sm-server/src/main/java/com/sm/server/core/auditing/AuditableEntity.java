@@ -1,4 +1,4 @@
-package com.sm.security.auditing;
+package com.sm.server.core.auditing;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

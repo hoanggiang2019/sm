@@ -1,4 +1,4 @@
-package com.sm.security.entities;
+package com.sm.server.core.entities;
 
 
 import jakarta.persistence.*;
@@ -22,12 +22,13 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity implements UserDetails {
-    @Column(length = 64, nullable = false)
+
     @NotNull
+    @Column(length = 64, unique = true, nullable = false)
     private String username;
 
-    @Column(length = 64, nullable = false)
     @NotNull
+    @Column(length = 64, nullable = false)
     private String password;
 
     @Column(name = "first_name", length = 50)

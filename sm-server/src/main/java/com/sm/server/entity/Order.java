@@ -1,7 +1,7 @@
 package com.sm.server.entity;
 
-import com.sm.security.entities.BaseEntity;
-import com.sm.security.entities.User;
+import com.sm.server.core.entities.BaseEntity;
+import com.sm.server.core.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
-package com.sm.security.entities;
+package com.sm.server.core.entities;
 
-import com.sm.security.auditing.AuditListener;
-import com.sm.security.auditing.AuditableEntity;
+import com.sm.server.core.auditing.AuditListener;
+import com.sm.server.core.auditing.AuditableEntity;
 import jakarta.persistence.*;
 
 import java.io.Serial;

@@ -1,6 +1,6 @@
 package com.sm.server.common;
 
-import com.sm.security.repositories.RoleRepository;
+import com.sm.server.core.repositories.RoleRepository;
 import com.sm.server.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

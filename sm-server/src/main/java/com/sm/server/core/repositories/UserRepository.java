@@ -1,6 +1,6 @@
-package com.sm.security.repositories;
+package com.sm.server.core.repositories;
 
-import com.sm.security.entities.User;
+import com.sm.server.core.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
