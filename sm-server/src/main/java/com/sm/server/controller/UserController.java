@@ -1,6 +1,7 @@
-package com.sm.server.core.auth;
+package com.sm.server.controller;
 
 import com.sm.server.core.dto.UserDto;
+import com.sm.server.core.security.AuthenticationResponse;
 import com.sm.server.core.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,8 +19,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-public class AuthenticationController {
-
+public class UserController {
     private final UserService service;
     private final AuthenticationManager authenticationManager;
 
@@ -40,5 +40,4 @@ public class AuthenticationController {
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         service.refreshToken(request, response);
     }
-
 }

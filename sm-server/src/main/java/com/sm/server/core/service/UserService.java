@@ -1,7 +1,6 @@
 package com.sm.server.core.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sm.server.core.auth.AuthenticationResponse;
 import com.sm.server.core.dto.RoleDto;
 import com.sm.server.core.dto.UserDto;
 import com.sm.server.core.entities.Role;
@@ -10,6 +9,7 @@ import com.sm.server.core.entities.TokenType;
 import com.sm.server.core.entities.User;
 import com.sm.server.core.repositories.TokenRepository;
 import com.sm.server.core.repositories.UserRepository;
+import com.sm.server.core.security.AuthenticationResponse;
 import com.sm.server.core.security.JwtService;
 import com.sm.server.service.GenericService;
 import jakarta.servlet.http.HttpServletRequest;
