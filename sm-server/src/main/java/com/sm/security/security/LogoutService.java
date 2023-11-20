@@ -1,6 +1,6 @@
-package com.sm.server.core.security;
+package com.sm.security.security;
 
-import com.sm.server.core.repositories.TokenRepository;
+import com.sm.security.repositories.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

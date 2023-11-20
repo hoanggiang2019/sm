@@ -1,4 +1,4 @@
-package com.sm.server.core.entities;
+package com.sm.security.entities;
 
 public enum TokenType {
     BEARER

@@ -1,7 +1,7 @@
-package com.sm.server.core.service;
+package com.sm.security.service;
 
-import com.sm.server.core.entities.Role;
-import com.sm.server.core.repositories.RoleRepository;
+import com.sm.security.entities.Role;
+import com.sm.security.repositories.RoleRepository;
 import com.sm.server.service.GenericService;
 import org.springframework.stereotype.Service;
 

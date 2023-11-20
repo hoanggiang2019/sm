@@ -1,4 +1,4 @@
-package com.sm.server.core.auditing;
+package com.sm.security.auditing;
 
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;

@@ -1,7 +1,7 @@
 package com.sm.server;
 
-import com.sm.server.core.service.RoleService;
-import com.sm.server.core.service.UserService;
+import com.sm.security.service.RoleService;
+import com.sm.security.service.UserService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;

@@ -1,4 +1,4 @@
-package com.sm.server.core.dto;
+package com.sm.security.dto;
 
 import lombok.Data;
 

@@ -1,7 +1,7 @@
-package com.sm.server.core.auth;
+package com.sm.security.auth;
 
-import com.sm.server.core.dto.UserDto;
-import com.sm.server.core.service.UserService;
+import com.sm.security.dto.UserDto;
+import com.sm.security.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.sm.server.core.entities;
+package com.sm.security.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

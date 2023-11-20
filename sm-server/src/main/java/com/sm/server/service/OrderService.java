@@ -1,9 +1,9 @@
 package com.sm.server.service;
 
+import com.sm.security.entities.User;
+import com.sm.security.repositories.UserRepository;
 import com.sm.server.common.Constants;
 import com.sm.server.common.CustomException;
-import com.sm.server.core.entities.User;
-import com.sm.server.core.repositories.UserRepository;
 import com.sm.server.entity.Order;
 import com.sm.server.entity.Warehouse;
 import com.sm.server.repository.OrderRepository;
