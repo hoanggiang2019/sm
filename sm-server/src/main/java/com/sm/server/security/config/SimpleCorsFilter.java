@@ -1,4 +1,4 @@
-package com.sm.server.core.security;
+package com.sm.server.security.config;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;

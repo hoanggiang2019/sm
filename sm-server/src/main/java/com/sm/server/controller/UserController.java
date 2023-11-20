@@ -1,8 +1,8 @@
 package com.sm.server.controller;
 
 import com.sm.server.core.dto.UserDto;
-import com.sm.server.core.security.AuthenticationResponse;
 import com.sm.server.core.service.UserService;
+import com.sm.server.security.util.AuthenticationResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

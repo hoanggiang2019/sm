@@ -1,4 +1,4 @@
-package com.sm.server.core.security;
+package com.sm.server.security.util;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

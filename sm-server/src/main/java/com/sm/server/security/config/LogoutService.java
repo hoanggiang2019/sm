@@ -1,4 +1,4 @@
-package com.sm.server.core.security;
+package com.sm.server.security.config;
 
 import com.sm.server.core.repositories.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;

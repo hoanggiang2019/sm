@@ -1,4 +1,4 @@
-package com.sm.server.core.security;
+package com.sm.server.security.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

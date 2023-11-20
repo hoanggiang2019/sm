@@ -1,7 +1,8 @@
-package com.sm.server.core.security;
+package com.sm.server.security.util;
 
 import com.sm.server.core.repositories.TokenRepository;
 import com.sm.server.core.service.UserService;
+import com.sm.server.security.config.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
