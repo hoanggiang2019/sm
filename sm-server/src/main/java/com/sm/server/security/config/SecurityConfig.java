@@ -1,6 +1,6 @@
 package com.sm.server.security.config;
 
-import com.sm.server.security.util.JwtRequestFilter;
+import com.sm.server.security.jwt.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

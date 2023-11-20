@@ -1,6 +1,6 @@
 package com.sm.server.core.repositories;
 
-import com.sm.server.core.entities.Token;
+import com.sm.server.security.jwt.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

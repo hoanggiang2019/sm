@@ -1,5 +1,6 @@
-package com.sm.server.core.entities;
+package com.sm.server.security.jwt;
 
+import com.sm.server.core.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
