@@ -2,8 +2,6 @@
 
 import * as React from "react"
 import {useSearchParams} from "next/navigation"
-import {signIn} from "next-auth/react"
-
 import {cn} from "@/lib/utils"
 import {buttonVariants} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
@@ -19,20 +17,9 @@ export function UserAuthForm() {
     async function onSubmit(data: FormData) {
         setIsLoading(true)
 
-        const signInResult = await signIn("email", {
-            redirect: false,
-            callbackUrl: searchParams?.get("from") || "/dashboard",
-        })
 
         setIsLoading(false)
 
-        if (!signInResult?.ok) {
-            return toast({
-                title: "Something went wrong.",
-                description: "Your sign in request failed. Please try again.",
-                variant: "destructive",
-            })
-        }
 
         return toast({
             title: "Check your email",

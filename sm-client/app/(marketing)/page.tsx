@@ -1,4 +1,49 @@
+'use client'
+import axios from "axios";
+import {useEffect, useState} from "react";
+
+interface Category {
+    id: number
+    name: string
+    description: string
+}
+
+
+export function CategoryCard(category: Category) {
+    return (
+        <div className="relative overflow-hidden rounded-lg border bg-background p-2">
+            <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
+                <svg viewBox="0 0 24 24" className="h-12 w-12 fill-current">
+                    {/*<path d={""}/>*/}
+                </svg>
+                <div className="space-y-2">
+                    <h3 className="font-bold">{category.name}</h3>
+                    <p className="text-sm">
+                        {category.description}
+                    </p>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 export default async function IndexPage() {
+    const [category, setCategory] = useState<Category[]>([]);
+
+    useEffect(() => {
+        const getCategory = async () => {
+            try {
+                const response = await axios.get("http://localhost:8080/api/category/getAllCategories")
+                setCategory(response.data)
+                console.log(category)
+            } catch (e) {
+            }
+        };
+
+        getCategory().then(r => {
+        })
+    }, []);
+
 
     return (
         <>
@@ -12,84 +57,9 @@ export default async function IndexPage() {
                     </h2>
                 </div>
                 <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
-                    <div className="relative overflow-hidden rounded-lg border bg-background p-2">
-                        <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
-                            <svg viewBox="0 0 24 24" className="h-12 w-12 fill-current">
-                                {/*<path d={""}/>*/}
-                            </svg>
-                            <div className="space-y-2">
-                                <h3 className="font-bold">Name</h3>
-                                <p className="text-sm">
-                                    Description
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="relative overflow-hidden rounded-lg border bg-background p-2">
-                        <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
-                            <svg viewBox="0 0 24 24" className="h-12 w-12 fill-current">
-                                {/*<path d={""}/>*/}
-                            </svg>
-                            <div className="space-y-2">
-                                <h3 className="font-bold">Name</h3>
-                                <p className="text-sm">
-                                    Description
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="relative overflow-hidden rounded-lg border bg-background p-2">
-                        <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
-                            <svg viewBox="0 0 24 24" className="h-12 w-12 fill-current">
-                                {/*<path d={""}/>*/}
-                            </svg>
-                            <div className="space-y-2">
-                                <h3 className="font-bold">Name</h3>
-                                <p className="text-sm">
-                                    Description
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="relative overflow-hidden rounded-lg border bg-background p-2">
-                        <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
-                            <svg viewBox="0 0 24 24" className="h-12 w-12 fill-current">
-                                {/*<path d={""}/>*/}
-                            </svg>
-                            <div className="space-y-2">
-                                <h3 className="font-bold">Name</h3>
-                                <p className="text-sm">
-                                    Description
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="relative overflow-hidden rounded-lg border bg-background p-2">
-                        <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
-                            <svg viewBox="0 0 24 24" className="h-12 w-12 fill-current">
-                                {/*<path d={""}/>*/}
-                            </svg>
-                            <div className="space-y-2">
-                                <h3 className="font-bold">Name</h3>
-                                <p className="text-sm">
-                                    Description
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="relative overflow-hidden rounded-lg border bg-background p-2">
-                        <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
-                            <svg viewBox="0 0 24 24" className="h-12 w-12 fill-current">
-                                {/*<path d={""}/>*/}
-                            </svg>
-                            <div className="space-y-2">
-                                <h3 className="font-bold">Name</h3>
-                                <p className="text-sm">
-                                    Description
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    {category.map((e) => (
+                        <CategoryCard description={e.description} name={e.name} id={e.id}/>
+                    ))}
                 </div>
             </section>
 

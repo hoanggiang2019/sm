@@ -5,12 +5,13 @@ import {cn} from "@/lib/utils"
 import {buttonVariants} from "@/components/ui/button"
 import {MainNav} from "@/components/main-nav"
 import {SiteFooter} from "@/components/site-footer"
+import React from "react";
 
 interface MarketingLayoutProps {
     children: React.ReactNode
 }
 
-export default async function MarketingLayout({
+export default function MarketingLayout({
                                                   children,
                                               }: MarketingLayoutProps) {
     return (
