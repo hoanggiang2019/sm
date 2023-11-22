@@ -1,13 +1,12 @@
 'use client'
-import axios from "axios";
 import {useEffect, useState} from "react";
+import {getCategory} from "@/lib/session";
 
 interface Category {
     id: number
     name: string
     description: string
 }
-
 
 export function CategoryCard(category: Category) {
     return (
@@ -27,20 +26,16 @@ export function CategoryCard(category: Category) {
     )
 }
 
-export default async function IndexPage() {
+export default function IndexPage() {
     const [category, setCategory] = useState<Category[]>([]);
 
     useEffect(() => {
-        const getCategory = async () => {
-            try {
-                const response = await axios.get("http://localhost:8080/api/category/getAllCategories")
-                setCategory(response.data)
-                console.log(category)
-            } catch (e) {
-            }
+        const fetchCategory = async () => {
+            const response = await getCategory();
+            setCategory(response)
         };
 
-        getCategory().then(r => {
+        fetchCategory().then(r => {
         })
     }, []);
 
@@ -58,7 +53,7 @@ export default async function IndexPage() {
                 </div>
                 <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
                     {category.map((e) => (
-                        <CategoryCard description={e.description} name={e.name} id={e.id}/>
+                        <CategoryCard key={e.id} description={e.description} name={e.name} id={e.id}/>
                     ))}
                 </div>
             </section>

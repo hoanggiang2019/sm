@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    evn: {
-        NEXT_PUBLIC_APP_URL: 'http://localhost:3000',
+    env: {
+        NEXT_PUBLIC_API_URL: 'http://localhost:8080',
+        NEXT_PUBLIC_TOKEN_TYPE: 'Bearer ',
     },
 }
 

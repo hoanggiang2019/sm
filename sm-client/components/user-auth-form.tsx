@@ -1,39 +1,61 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import {useSearchParams} from "next/navigation"
+import React, {useEffect, useState} from "react"
 import {cn} from "@/lib/utils"
-import {buttonVariants} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
+import {Button} from "@/components/ui/button";
 import {toast} from "@/components/ui/use-toast"
-import {Icons} from "@/components/icons"
+import {useRouter} from "next/navigation";
+import {authenticate} from "@/lib/session";
+
+interface UserAuth {
+    username: string;
+    password: string;
+    errorUsername: string
+    errorPassword: string
+}
 
 export function UserAuthForm() {
-    const [isLoading, setIsLoading] = React.useState<boolean>(false)
-    const [isGitHubLoading, setIsGitHubLoading] = React.useState<boolean>(false)
-    const searchParams = useSearchParams()
+    const [username, setUsername] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
+    const [token, setToken] = useState()
 
-    async function onSubmit(data: FormData) {
-        setIsLoading(true)
+    const router = useRouter();
 
+    useEffect(() => {
+        if (token) {
+            router.push("/");
+        }
 
-        setIsLoading(false)
+    }, [token]);
 
+    async function handleSubmit() {
+        if (username === '') {
+            return toast({
+                title: "invalid username.",
+                description: "Your sign in request failed. Please try again.",
+                variant: "destructive"
+            })
+        }
 
-        return toast({
-            title: "Check your email",
-            description: "We sent you a login link. Be sure to check your spam too.",
-        })
-    }
+        if (password === '') {
+            return toast({
+                title: "invalid password.",
+                description: "Your sign in request failed. Please try again.",
+                variant: "destructive"
+            })
+        }
 
-    function handleSubmit() {
-        return undefined;
+        const response = await authenticate(username, password);
+        if (response) {
+            setToken(response.access_token)
+        }
     }
 
     return (
         <div className={cn("grid gap-6",)}>
-            <form onSubmit={handleSubmit}>
+
                 <div className="grid gap-2">
                     <div className="grid gap-1">
                         <Label className="sr-only" htmlFor="email">
@@ -46,6 +68,7 @@ export function UserAuthForm() {
                             autoCapitalize="none"
                             autoComplete="username"
                             autoCorrect="off"
+                            onChange={event => setUsername(event.target.value)}
                         />
 
                         <Input
@@ -55,16 +78,13 @@ export function UserAuthForm() {
                             autoCapitalize="none"
                             autoComplete="password"
                             autoCorrect="off"
+                            onChange={event => setPassword(event.target.value)}
                         />
                     </div>
-                    <button className={cn(buttonVariants())} disabled={isLoading}>
-                        {isLoading && (
-                            <Icons.spinner className="mr-2 h-4 w-4 animate-spin"/>
-                        )}
-                        Sign In
-                    </button>
+
+                    <Button className={"border-y-gray-900"} onClick={handleSubmit}>Sign In</Button>
+
                 </div>
-            </form>
 
             <div className="relative">
                 <div className="absolute inset-0 flex items-center">
