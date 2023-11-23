@@ -18,8 +18,6 @@ export function UserAccountNav() {
     const router = useRouter();
 
     function handleLogout() {
-        console.log("ádadsa")
-        localStorage.clear();
         router.push("/")
     }
 

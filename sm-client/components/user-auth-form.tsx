@@ -8,6 +8,7 @@ import {Button} from "@/components/ui/button";
 import {toast} from "@/components/ui/use-toast"
 import {useRouter} from "next/navigation";
 import {authenticate} from "@/lib/session";
+import {getCookie, setCookie} from "cookies-next";
 
 interface UserAuth {
     username: string;
@@ -19,13 +20,16 @@ interface UserAuth {
 export function UserAuthForm() {
     const [username, setUsername] = useState<string>('')
     const [password, setPassword] = useState<string>('')
-    const [token, setToken] = useState()
+    const [token, setToken] = useState<string>()
 
     const router = useRouter();
 
     useEffect(() => {
+        setToken(getCookie("token"))
+
         if (token) {
-            router.push("/");
+            setCookie("token", token)
+            router.back()
         }
 
     }, [token]);

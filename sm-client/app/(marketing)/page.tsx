@@ -2,13 +2,8 @@
 import {useEffect, useState} from "react";
 import {getCategory} from "@/lib/session";
 
-interface Category {
-    id: number
-    name: string
-    description: string
-}
 
-export function CategoryCard(category: Category) {
+export function CategoryCard(category: TypeProductProp) {
     return (
         <div className="relative overflow-hidden rounded-lg border bg-background p-2">
             <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
@@ -27,7 +22,7 @@ export function CategoryCard(category: Category) {
 }
 
 export default function IndexPage() {
-    const [category, setCategory] = useState<Category[]>([]);
+    const [category, setCategory] = useState<TypeProductProp[]>([]);
 
     useEffect(() => {
         const fetchCategory = async () => {

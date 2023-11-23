@@ -3,7 +3,7 @@ import {MainNav} from "@/components/main-nav"
 import {DashboardNav} from "@/components/nav"
 import {SiteFooter} from "@/components/site-footer"
 import {UserAccountNav} from "@/components/user-account-nav"
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import {DashboardConfig} from "@/types";
 import {getCurrentUser} from "@/lib/session";
 
@@ -25,7 +25,7 @@ const dashboardConfig: DashboardConfig = {
     ],
     sidebarNav: [
         {
-            title: "Posts",
+            title: "Items",
             href: "/dashboard",
             icon: "post",
         },
@@ -35,9 +35,9 @@ const dashboardConfig: DashboardConfig = {
             icon: "billing",
         },
         {
-            title: "Settings",
-            href: "/dashboard/settings",
-            icon: "settings",
+            title: "Orders",
+            href: "/dashboard/orders",
+            icon: "pizza",
         },
     ],
 }
