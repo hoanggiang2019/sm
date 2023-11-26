@@ -1,3 +1,4 @@
+'use client'
 import {Metadata} from "next"
 import Link from "next/link"
 
@@ -5,13 +6,11 @@ import {cn} from "@/lib/utils"
 import {buttonVariants} from "@/components/ui/button"
 import {Icons} from "@/components/icons"
 import {UserAuthForm} from "@/components/user-auth-form"
+import {useStore} from "@/app/store/stores";
 
-export const metadata: Metadata = {
-    title: "Login",
-    description: "Login to your account",
-}
 
 export default function LoginPage() {
+
     return (
         <div className="container flex h-screen w-screen flex-col items-center justify-center">
             <Link href="/"

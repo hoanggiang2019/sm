@@ -1,39 +1,22 @@
 'use client'
-import {useEffect, useState} from "react";
 import {getCategory} from "@/lib/session";
-
-
-export function CategoryCard(category: TypeProductProp) {
-    return (
-        <div className="relative overflow-hidden rounded-lg border bg-background p-2">
-            <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
-                <svg viewBox="0 0 24 24" className="h-12 w-12 fill-current">
-                    {/*<path d={""}/>*/}
-                </svg>
-                <div className="space-y-2">
-                    <h3 className="font-bold">{category.name}</h3>
-                    <p className="text-sm">
-                        {category.description}
-                    </p>
-                </div>
-            </div>
-        </div>
-    )
-}
+import {useEffect, useState} from "react";
 
 export default function IndexPage() {
-    const [category, setCategory] = useState<TypeProductProp[]>([]);
+    const [productTypes, setProductTypes] = useState<ProductType[]>([]);
 
     useEffect(() => {
-        const fetchCategory = async () => {
-            const response = await getCategory();
-            setCategory(response)
+        const fetchData = async () => {
+            try {
+                const data = await getCategory();
+                setProductTypes(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         };
 
-        fetchCategory().then(r => {
-        })
+        fetchData();
     }, []);
-
 
     return (
         <>
@@ -47,8 +30,21 @@ export default function IndexPage() {
                     </h2>
                 </div>
                 <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
-                    {category.map((e) => (
-                        <CategoryCard key={e.id} description={e.description} name={e.name} id={e.id}/>
+                    {productTypes.map((e) => (
+
+                        <div key={e.id} className="relative overflow-hidden rounded-lg border bg-background p-2">
+                            <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
+                                <svg viewBox="0 0 24 24" className="h-12 w-12 fill-current">
+                                    {/*<path d={""}/>*/}
+                                </svg>
+                                <div className="space-y-2">
+                                    <h3 className="font-bold">{e.name}</h3>
+                                    <p className="text-sm">
+                                        {e.description}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     ))}
                 </div>
             </section>

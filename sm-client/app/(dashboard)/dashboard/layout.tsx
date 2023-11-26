@@ -1,10 +1,10 @@
 'use client'
-import {MainNav} from "@/components/main-nav"
+
+import React, {useEffect, useState} from "react";
 import {DashboardNav} from "@/components/nav"
 import {SiteFooter} from "@/components/site-footer"
-import {UserAccountNav} from "@/components/user-account-nav"
-import React, {useEffect} from "react";
 import {DashboardConfig} from "@/types";
+import Nav from "@/app/(marketing)/nav";
 import {getCurrentUser} from "@/lib/session";
 
 interface DashboardLayoutProps {
@@ -42,28 +42,22 @@ const dashboardConfig: DashboardConfig = {
     ],
 }
 
-export default async function DashboardLayout({children,}: DashboardLayoutProps) {
+export default function DashboardLayout({children,}: DashboardLayoutProps) {
+
+    const [user, setUser] = useState<User>({})
+
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token == null) {
-            return;
+        const getData = async () => {
+            const data = await getCurrentUser()
+            setUser(data)
         }
-        console.log(token)
-        const fetchCategory = async () => {
-            const response = await getCurrentUser(token);
-            console.log(response)
-        };
+        getData();
     }, []);
 
     return (
         <div className="flex min-h-screen flex-col space-y-6">
-            <header className="sticky top-0 z-40 border-b bg-background">
-
-                <div className="container flex h-16 items-center justify-between py-4">
-                    <MainNav items={dashboardConfig.mainNav}/>
-                    <UserAccountNav/>
-                </div>
-
+            <header className="container z-40 bg-background">
+                <Nav user={user}/>
             </header>
             <div className="container grid flex-1 gap-12 md:grid-cols-[200px_1fr]">
                 <aside className="hidden w-[200px] flex-col md:flex">
@@ -76,4 +70,5 @@ export default async function DashboardLayout({children,}: DashboardLayoutProps)
             <SiteFooter/>
         </div>
     )
+
 }

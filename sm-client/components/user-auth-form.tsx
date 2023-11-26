@@ -10,29 +10,11 @@ import {useRouter} from "next/navigation";
 import {authenticate} from "@/lib/session";
 import {getCookie, setCookie} from "cookies-next";
 
-interface UserAuth {
-    username: string;
-    password: string;
-    errorUsername: string
-    errorPassword: string
-}
-
 export function UserAuthForm() {
     const [username, setUsername] = useState<string>('')
     const [password, setPassword] = useState<string>('')
-    const [token, setToken] = useState<string>()
 
     const router = useRouter();
-
-    useEffect(() => {
-        setToken(getCookie("token"))
-
-        if (token) {
-            setCookie("token", token)
-            router.back()
-        }
-
-    }, [token]);
 
     async function handleSubmit() {
         if (username === '') {
@@ -52,9 +34,8 @@ export function UserAuthForm() {
         }
 
         const response = await authenticate(username, password);
-        if (response) {
-            setToken(response.access_token)
-        }
+        if (response)
+            router.push("/")
     }
 
     return (
