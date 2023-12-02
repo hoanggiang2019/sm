@@ -5,5 +5,6 @@ interface Product {
     categoryId?: number
     amount?: number
     quantity?: number
+    categoryDto?: ProductType
 
 }

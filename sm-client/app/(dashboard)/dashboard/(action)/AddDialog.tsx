@@ -13,26 +13,26 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import {Input} from "@/components/ui/input";
 import * as React from "react";
 import {saveProduct} from "@/lib/session";
-import {useState} from "react";
-import {useStore} from "@/app/store/stores";
+import {Dispatch, SetStateAction, useState} from "react";
+import {toast} from "@/components/ui/use-toast";
 
 interface AddDialogProp {
-    types: ProductType[]
-    setLoad: React.Dispatch<React.SetStateAction<boolean>>
+    productTypes: ProductType[]
+    setReload: Dispatch<SetStateAction<any>>
 }
 
 
-export function AddDialog({types, setLoad}: AddDialogProp) {
+export function AddDialog({productTypes, setReload}: AddDialogProp) {
     const [product, setProduct] = useState<Product>();
 
-    const {productTypeStore} = useStore()
-    const {productTypes} = productTypeStore
-
     const handleSaveProduct = async () => {
-        console.log(product)
         const response = await saveProduct(product);
-        if (response?.status == 200)
-            setLoad(true);
+        if (response?.status == 200) {
+            setReload(true)
+            return toast({
+                title: "Thêm thành công"
+            })
+        }
     };
 
 
@@ -60,7 +60,7 @@ export function AddDialog({types, setLoad}: AddDialogProp) {
                                 <SelectValue placeholder="Select"/>
                             </SelectTrigger>
                             <SelectContent position="popper">
-                                {productTypes.map((e) => (
+                                {productTypes?.map((e) => (
                                     // @ts-ignore
                                     <SelectItem key={e.id} value={e.id.toString()}>{e.name}</SelectItem>
                                 ))}

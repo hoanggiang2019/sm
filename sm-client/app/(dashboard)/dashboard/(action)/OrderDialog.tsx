@@ -12,20 +12,25 @@ import {Button} from "@/components/ui/button";
 import {ShoppingCart} from "lucide-react";
 import React, {Dispatch, SetStateAction, useState} from "react";
 import {addOrder} from "@/lib/session";
+import {toast} from "@/components/ui/use-toast";
 
-export function OrderDialog({product, user, setLoad}: {
+export function OrderDialog({product, user, setReload}: {
     product: Product,
     user: User,
-    setLoad: Dispatch<SetStateAction<boolean>>
+    setReload: Dispatch<SetStateAction<any>>
 }) {
     const [quantity, setQuantity] = useState<number>(0);
     const [price, setPrice] = useState<number>(0);
     const handleAddOrder = async () => {
         const body = {shipperId: user.id, productId: product.id, quantity: quantity, price: price}
-        console.log(body)
-        const response = await addOrder(body);
 
-        setLoad(true)
+        const response = await addOrder(body);
+        if (response?.status == 200) {
+            setReload(true)
+            return toast({
+                title: "Thêm thành công"
+            })
+        }
     }
 
     return (

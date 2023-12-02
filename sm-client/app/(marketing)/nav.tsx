@@ -24,7 +24,7 @@ export const marketingConfig: MarketingConfig = {
     ],
 }
 
-export default function Nav({user}: { user: User }) {
+export default function Nav({user}: { user?: User }) {
     const router = useRouter();
 
     function handleLogout() {

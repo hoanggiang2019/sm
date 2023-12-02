@@ -1,5 +1,4 @@
 'use client'
-import {ContextProvider} from "@/app/store/stores";
 
 interface AuthLayoutProps {
     children: React.ReactNode
@@ -7,8 +6,6 @@ interface AuthLayoutProps {
 
 export default function AuthLayout({children}: AuthLayoutProps) {
     return (
-        <ContextProvider>
-            <div className="min-h-screen">{children}</div>
-        </ContextProvider>
+        <div className="min-h-screen">{children}</div>
     )
 }

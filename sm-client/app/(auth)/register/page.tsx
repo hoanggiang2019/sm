@@ -1,16 +1,40 @@
+'use client'
 import Link from "next/link"
 
 import {cn} from "@/lib/utils"
-import {buttonVariants} from "@/components/ui/button"
+import {Button, buttonVariants} from "@/components/ui/button"
 import {Icons} from "@/components/icons"
-import {UserAuthForm} from "@/components/user-auth-form"
-
-export const metadata = {
-    title: "Create an account",
-    description: "Create an account to get started.",
-}
+import {Input} from "@/components/ui/input";
+import React, {useState} from "react";
+import {useRouter} from "next/navigation";
+import {toast} from "@/components/ui/use-toast";
+import {authenticate, register} from "@/lib/session";
+import {setCookie} from "cookies-next";
 
 export default function RegisterPage() {
+    const [firstname, setFirstname] = useState<string>('')
+    const [lastname, setLastname] = useState<string>('')
+    const [username, setUsername] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
+
+    const router = useRouter();
+
+    async function handleSubmit() {
+        if (username === '') {
+            return toast({
+                title: "Thông tin đăng kí không hợp lệ.",
+                description: "Vui lòng nhập đầy đủ thông tin.",
+                variant: "destructive"
+            })
+        }
+        const body = {firstname: firstname, lastname: lastname, username: username, password: password}
+        const response = await register(body);
+        if (response) {
+
+            router.push("/dashboard")
+        }
+    }
+
     return (
         <div
             className="container grid h-screen w-screen flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0">
@@ -32,24 +56,61 @@ export default function RegisterPage() {
                             Enter your username and password below to create your account
                         </p>
                     </div>
-                    <UserAuthForm/>
-                    <p className="px-8 text-center text-sm text-muted-foreground">
-                        By clicking continue, you agree to our{" "}
-                        <Link
-                            href="/terms"
-                            className="hover:text-brand underline underline-offset-4"
-                        >
-                            Terms of Service
-                        </Link>{" "}
-                        and{" "}
-                        <Link
-                            href="/privacy"
-                            className="hover:text-brand underline underline-offset-4"
-                        >
-                            Privacy Policy
-                        </Link>
-                        .
-                    </p>
+                    <div className={cn("grid gap-6",)}>
+
+                        <div className="grid gap-4">
+                            <div className="grid gap-2">
+                                <Input
+                                    id="firstname"
+                                    placeholder="Họ"
+                                    type="text"
+                                    autoCapitalize="none"
+                                    autoComplete="username"
+                                    autoCorrect="off"
+                                    onChange={event => setFirstname(event.target.value)}
+                                />
+                                <Input
+                                    id="lastname"
+                                    placeholder="Tên"
+                                    type="text"
+                                    autoCapitalize="none"
+                                    autoComplete="username"
+                                    autoCorrect="off"
+                                    onChange={event => setLastname(event.target.value)}
+                                />
+
+                                <Input
+                                    id="username"
+                                    placeholder="username"
+                                    type="username"
+                                    autoCapitalize="none"
+                                    autoComplete="username"
+                                    autoCorrect="off"
+                                    onChange={event => setUsername(event.target.value)}
+                                />
+
+                                <Input
+                                    id="password"
+                                    placeholder="password"
+                                    type="password"
+                                    autoCapitalize="none"
+                                    autoComplete="password"
+                                    autoCorrect="off"
+                                    onChange={event => setPassword(event.target.value)}
+                                />
+                            </div>
+
+                            <Button className={"border-y-gray-900"} onClick={handleSubmit}>Sign In</Button>
+
+                        </div>
+
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <span className="w-full border-t"/>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>

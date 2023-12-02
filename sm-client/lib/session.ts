@@ -1,5 +1,6 @@
 import axios from "axios";
 import {getCookie, setCookie} from "cookies-next";
+import {format} from 'date-fns';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 const tokenType = process.env.NEXT_PUBLIC_TOKEN_TYPE;
@@ -24,6 +25,18 @@ export async function authenticate(username: string, password: string) {
     }
 }
 
+export async function register(body: any) {
+    try {
+        const response = await api.post("api/v1/auth/register", body)
+        const token = response?.data.access_token;
+        setCookie("token", token)
+        return token
+    } catch (e) {
+        alert("Error authenticate")
+        return null
+    }
+}
+
 function getToken() {
     const token = getCookie("token");
     const headers = {
@@ -32,12 +45,13 @@ function getToken() {
 
     return headers;
 }
-
 export async function getCurrentUser() {
     try {
         const headers = getToken()
+
         const session = await api.get("api/common/getCurrentUser", {headers})
-        return session?.data
+        if (session?.status == 200)
+            return session.data
     } catch (e) {
         return null
     }
@@ -56,18 +70,32 @@ export async function getCategory() {
     }
 }
 
-export async function getAllProduct() {
+export async function getAllProduct(typeSelect: string) {
     try {
-        const session = await api.get("api/warehouse/getAllProduct")
+        const s = typeSelect ? '/' + typeSelect : ''
+        const headers = getToken()
+        const session = await api.get("api/warehouse/getAllProduct" + s, {headers})
+        return session
+    } catch (e) {
+        return null
+    }
+}
+
+export async function getAllOrder(body: any) {
+    try {
+        const headers = getToken()
+        const session = await api.post("/api/order/getAll", body, {headers})
         return session?.data
     } catch (e) {
         return null
     }
 }
 
-export async function getAllOrder() {
+export async function getReport() {
     try {
-        const session = await api.get("/api/order/all/getAllOrder")
+        const currentDate: Date = new Date();
+        const headers = getToken()
+        const session = await api.get("/api/report/admin/getAllReport/" + format(currentDate, 'yyyyMMdd'), {headers})
         return session?.data
     } catch (e) {
         return null
@@ -77,7 +105,7 @@ export async function getAllOrder() {
 export async function saveProduct(product: Product | undefined) {
     try {
         const headers = getToken()
-        const session = await api.post("api/warehouse/admin/addProduct", product)
+        const session = await api.post("api/warehouse/admin/addProduct", product, {headers})
         return session
     } catch (e) {
         return null
@@ -86,22 +114,21 @@ export async function saveProduct(product: Product | undefined) {
 
 export async function addOrder(body: any) {
     try {
-        const session = await api.post("api/order/all/addOrder", body)
-        return session?.data
+        const headers = getToken()
+        return await api.post("api/order/all/addOrder", body, {headers})
     } catch (e) {
         return null
     }
 }
-
 export async function updateOrder(body: any) {
     try {
-        const session = await api.put("api/order/all/updateOrder", body)
+        const headers = getToken()
+        const session = await api.put("api/order/updateOrder", body, {headers})
         return session?.data
     } catch (e) {
         return null
     }
 }
-
 export async function getProduct(id: string) {
     try {
         const session = await api.get("api/warehouse/getProduct" + "/" + id)

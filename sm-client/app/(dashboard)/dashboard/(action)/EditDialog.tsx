@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
 import {
     Dialog,
     DialogContent,
@@ -11,15 +11,21 @@ import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {ClipboardEdit} from "lucide-react";
+import {toast} from "@/components/ui/use-toast";
 
 interface EditDialogProp {
     product: Product
+    setReload: Dispatch<SetStateAction<any>>
 }
 
-export function EditDialog({product}: EditDialogProp) {
+export function EditDialog({product, setReload}: EditDialogProp) {
     const [open, setOpen] = useState(false);
-    const handleDialog = (event: React.MouseEvent<HTMLButtonElement>) => {
 
+    const handleDialog = () => {
+        setReload(true)
+        return toast({
+            title: "Sửa thành công"
+        })
     }
 
     return (
@@ -50,14 +56,14 @@ export function EditDialog({product}: EditDialogProp) {
                             Số lượng
                         </Label>
                         <Input
-                            id="username"
+                            id="quantity"
                             type="number"
                             className="col-span-3"
                         />
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button type="submit">Lưu</Button>
+                    <Button type="submit" onClick={handleDialog}>Lưu</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
