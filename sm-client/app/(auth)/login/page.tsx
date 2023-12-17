@@ -38,7 +38,7 @@ export default function LoginPage() {
 
         const response = await authenticate(username, password);
         if (response)
-            router.push("/")
+            router.push("/dashboard")
     }
     return (
         <div className="container flex h-screen w-screen flex-col items-center justify-center">

@@ -6,4 +6,6 @@ interface User {
     password?: string
     firstName?: string
     lastName?: string
+    admin?: boolean
+    shipper?: boolean
 }

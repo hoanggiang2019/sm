@@ -11,8 +11,7 @@ export function SiteFooter() {
                 <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
                     <Icons.logo/>
                     <p className="text-center text-sm leading-loose md:text-left">
-                        Develop by {" "}<a target="_blank" rel="noreferrer"
-                                           className="font-medium underline underline-offset-4">shadcn</a>.
+                        Develop by {" "}<a target="_blank" rel="noreferrer" className="font-medium underline underline-offset-4">shadcn</a>.
                     </p>
                 </div>
                 <ModeToggle/>

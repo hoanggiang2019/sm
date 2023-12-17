@@ -1,6 +1,6 @@
 import React, {Dispatch, SetStateAction, useState} from "react";
 import {
-    Dialog,
+    Dialog, DialogClose,
     DialogContent,
     DialogDescription, DialogFooter,
     DialogHeader,
@@ -12,21 +12,32 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {ClipboardEdit} from "lucide-react";
 import {toast} from "@/components/ui/use-toast";
+import {saveProduct, updateProduct} from "@/lib/session";
 
 interface EditDialogProp {
     product: Product
-    setReload: Dispatch<SetStateAction<any>>
+    setReload:Dispatch<SetStateAction<any>>
 }
 
-export function EditDialog({product, setReload}: EditDialogProp) {
-    const [open, setOpen] = useState(false);
+export function EditDialog({product,setReload} : EditDialogProp) {
+    const [name, setName] = useState(product.name);
+    const [sl, setSl] = useState(product.quantity);
 
-    const handleDialog = () => {
-        setReload(true)
-        return toast({
-            title: "Sửa thành công"
-        })
+    const handleDialog = async () => {
+        const body = {id: product.id, name: name, quantity: sl}
+        const response = await updateProduct(body);
+        if (response?.status == 200) {
+            setReload(true)
+            return toast({
+                title: "Sửa thành công"
+            })
+        } else {
+            return toast({
+                title: "Sửa thất bại"
+            })
+        }
     }
+
 
     return (
         <Dialog>
@@ -36,8 +47,6 @@ export function EditDialog({product, setReload}: EditDialogProp) {
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>Sửa thông tin</DialogTitle>
-                    <DialogDescription>
-                    </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
@@ -49,6 +58,7 @@ export function EditDialog({product, setReload}: EditDialogProp) {
                             type="text"
                             defaultValue={product.name}
                             className="col-span-3"
+                            onChange={event => setName(event.target.value)}
                         />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
@@ -58,12 +68,17 @@ export function EditDialog({product, setReload}: EditDialogProp) {
                         <Input
                             id="quantity"
                             type="number"
+                            defaultValue={product.quantity}
                             className="col-span-3"
+                            // @ts-ignore
+                            onChange={event => setSl(event.target.value)}
                         />
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button type="submit" onClick={handleDialog}>Lưu</Button>
+                    <DialogClose asChild>
+                        <Button type="submit" onClick={handleDialog}>Xác nhận</Button>
+                    </DialogClose>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

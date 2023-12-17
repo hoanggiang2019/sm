@@ -18,11 +18,11 @@ import {toast} from "@/components/ui/use-toast";
 
 interface AddDialogProp {
     productTypes: ProductType[]
-    setReload: Dispatch<SetStateAction<any>>
+    setReload:Dispatch<SetStateAction<any>>
 }
 
 
-export function AddDialog({productTypes, setReload}: AddDialogProp) {
+export function AddDialog({productTypes, setReload} : AddDialogProp) {
     const [product, setProduct] = useState<Product>();
 
     const handleSaveProduct = async () => {
@@ -39,11 +39,11 @@ export function AddDialog({productTypes, setReload}: AddDialogProp) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button>Add</Button>
+                <Button>Thêm mới</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Add new product</DialogTitle>
+                    <DialogTitle>Tạo sản phẩm mới</DialogTitle>
                 </DialogHeader>
                 <div className="flex flex-col items-center space-y-2">
                     <div className="grid-cols-1 w-full max-w-sm grid items-center gap-1.5">
@@ -119,7 +119,7 @@ export function AddDialog({productTypes, setReload}: AddDialogProp) {
                 <DialogFooter className="sm:flex sm:justify-end">
                     <DialogClose asChild>
                         <Button type="button" onClick={handleSaveProduct}>
-                            Save
+                            Xác nhận
                         </Button>
                     </DialogClose>
                 </DialogFooter>

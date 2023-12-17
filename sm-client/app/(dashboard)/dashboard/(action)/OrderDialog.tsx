@@ -1,5 +1,5 @@
 import {
-    Dialog,
+    Dialog, DialogClose,
     DialogContent, DialogDescription,
     DialogFooter,
     DialogHeader,
@@ -21,9 +21,16 @@ export function OrderDialog({product, user, setReload}: {
 }) {
     const [quantity, setQuantity] = useState<number>(0);
     const [price, setPrice] = useState<number>(0);
+    const [freeShip, setFreeShip] = useState<number>(0);
     const handleAddOrder = async () => {
-        const body = {shipperId: user.id, productId: product.id, quantity: quantity, price: price}
-
+        const body = {shipperId: user.id, productId: product.id, quantity: quantity, price: price, freeShip: freeShip}
+        // @ts-ignore
+        if (quantity > product.quantity) {
+            return toast({
+                title: "Không thể đặt quá số lượng",
+                variant: "destructive"
+            })
+        }
         const response = await addOrder(body);
         if (response?.status == 200) {
             setReload(true)
@@ -36,7 +43,7 @@ export function OrderDialog({product, user, setReload}: {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline"><ShoppingCart/> </Button>
+                <Button variant="outline" disabled={!product.quantity || product.quantity === 0}><ShoppingCart/> </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
@@ -68,9 +75,20 @@ export function OrderDialog({product, user, setReload}: {
                                }}
                         />
                     </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="username" className="text-right">Miễn phí ship</Label>
+                        <Input id="username" type="number" className="col-span-3"
+                               onChange={e => {
+                                   // @ts-ignore
+                                   setFreeShip(parseInt(e.target.value));
+                               }}
+                        />
+                    </div>
                 </div>
                 <DialogFooter>
-                    <Button type="submit" onClick={handleAddOrder}>Lưu</Button>
+                    <DialogClose asChild>
+                        <Button type="submit" onClick={handleAddOrder}>Xác nhận</Button>
+                    </DialogClose>
                 </DialogFooter>
             </DialogContent>
 

@@ -4,7 +4,6 @@ import {DashboardShell} from "@/components/shell"
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableFooter,
     TableHead,
@@ -12,7 +11,7 @@ import {
     TableRow
 } from "@/components/ui/table";
 import * as React from "react";
-import {getAllOrder, getCurrentUser, updateOrder} from "@/lib/session";
+import {confirmOrder, deleteOrder, getAllOrder, getCurrentUser, updateOrder} from "@/lib/session";
 import {
     Select,
     SelectContent,
@@ -20,14 +19,28 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select";
-import useSWR from "swr";
 import {useEffect, useState} from "react";
 import {DashboardConfig} from "@/types";
 import Nav from "@/app/(marketing)/nav";
 import {DashboardNav} from "@/components/nav";
 import {Input} from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
+import {LucideClipboardX, MoreHorizontal} from "lucide-react";
+import {toast} from "@/components/ui/use-toast";
+import {
+    AlertDialog, AlertDialogAction, AlertDialogCancel,
+    AlertDialogContent, AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
-const status = [
+import {Label} from "@/components/ui/label";
+import {deleteCookie} from "cookies-next";
+import {redirect} from "next/navigation";
+import {Badge} from "@/components/ui/badge";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+
+const statuses = [
     {id: 0, value: "Đã đặt"},
     {id: 1, value: "Đã lấy hàng"},
     {id: 2, value: "Trả lại"},
@@ -65,28 +78,95 @@ const dashboardConfig: DashboardConfig = {
 }
 
 export default function SettingsPage() {
-    const [orders, setOrder] = useState<Order[]>([]);
-    const {data: user, error: typeUser} = useSWR('getUser', getCurrentUser, {refreshInterval: 0});
-    const [date, setDate] = React.useState(new Date().toISOString().slice(0, 10).replace(/-/g, ''))
-    const [s, setStatus] = React.useState('')
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [user, setUser] = useState<User>({});
+    const [date, setDate] = useState(new Date().toISOString().slice(0, 10).replace(/-/g, ''))
+    const [status, setStatus] = useState('')
 
+    const [numReturn, setNumReturn] = useState<number>()
+    const [order, setOrder] = useState<Order>();
     useEffect(() => {
-
-        const fetchOrders = async () => {
-            const ss = {status: s, date: date.replace(/-/g, '')}
-            const resp = await getAllOrder(ss);
-            if (resp) {
-                setOrder(resp)
+        const fetchUser = async () => {
+            if (!user.id) {
+                const resp = await getCurrentUser();
+                if (resp) {
+                    setUser(resp)
+                } else {
+                    deleteCookie('token')
+                    redirect("/login")
+                }
             }
         }
-        fetchOrders();
+        fetchUser().then(r => {
+        });
+        fetchOrders().then(r => {
+        });
+    }, [user, status, date]);
 
-    }, [s, date]);
-
-    const updateStatus = async (orderID: number | undefined, value: string) => {
-        const body = {id: orderID, status: parseInt(value)}
-        const response = await updateOrder(body);
+    const fetchOrders = async () => {
+        if (user.id) {
+            const body = {
+                status: status,
+                shipperId: !user.admin ? user.id : undefined,
+                date: date.replace(/-/g, '')
+            }
+            const resp = await getAllOrder(body);
+            if (resp) {
+                setOrders(resp)
+            }
+        }
     }
+
+    const confirm = async (id: any) => {
+        const resp = await confirmOrder(id);
+
+        if (resp?.status == 200) {
+            await fetchOrders();
+            return toast({
+                title: "Xác nhận thành công"
+            })
+        } else {
+            return toast({
+                title: "Lỗi xác nhận đơn hàng",
+                variant: "destructive"
+            })
+        }
+    }
+
+    const deleteOrd = async (id: any) => {
+        const resp = await deleteOrder(id);
+
+        if (resp?.status == 200) {
+            await fetchOrders();
+            return toast({
+                title: "Xoá đơn hàng thành công"
+            })
+        } else {
+            return toast({
+                title: "Lỗi không thể xoá đơn hàng",
+                variant: "destructive"
+            })
+        }
+    }
+
+    const returnOrder = async () => {
+        if (!numReturn) {
+            return toast({
+                title: "Chưa nhập số lượng trả lại",
+                variant: "destructive"
+            })
+        }
+        const body = {id: order?.id, status: 2, numReturn: numReturn}
+        const response = await updateOrder(body);
+        if (response?.status == 200) {
+            await fetchOrders();
+            setOrder(undefined)
+            return toast({title: "Cập nhật đơn hàng thành công"})
+        } else {
+            return toast({title: "Lỗi cập nhật đơn hàng", variant: "destructive"})
+        }
+    }
+
 
     return (
         <>
@@ -94,13 +174,14 @@ export default function SettingsPage() {
                 <Nav user={user}/>
             </header>
             <div className="container grid flex-1 gap-12 md:grid-cols-[200px_1fr]">
+
                 <aside className="hidden w-[200px] flex-col md:flex">
                     <DashboardNav items={dashboardConfig.sidebarNav}/>
                 </aside>
                 <main className="flex w-full flex-1 flex-col overflow-hidden">
                     <DashboardShell>
                         <DashboardHeader heading="Đơn hàng"/>
-                        <div className="flex items-center py-4 w-1/2 ml-1 gap-4">
+                        <div className="flex items-center py-4 w-1/1 sm:w-1/2 ml-1 gap-4">
                             <Input type={"date"} defaultValue={new Date().toISOString().slice(0, 10)}
                                    onChange={e => setDate(e.target.value)}/>
                             <Select onValueChange={value => setStatus(value)}>
@@ -108,7 +189,7 @@ export default function SettingsPage() {
                                     <SelectValue placeholder="chọn trạng thái"/>
                                 </SelectTrigger>
                                 <SelectContent position="popper">
-                                    {status.map((status) => (
+                                    {statuses.map((status) => (
                                         <SelectItem key={status.id}
                                                     value={status.id.toString()}>{status.value}</SelectItem>
                                     ))}
@@ -118,38 +199,48 @@ export default function SettingsPage() {
                         <div className={"overflow-x-auto md:overflow-hidden"}>
                             {
                                 <Table>
-                                    <TableCaption>A list of your recent invoices.</TableCaption>
+
                                     <TableHeader>
                                         <TableRow>
                                             <TableHead>Tên sản phẩm</TableHead>
                                             <TableHead>Shipper</TableHead>
                                             <TableHead>Số lượng</TableHead>
+                                            <TableHead>Miễn phí ship</TableHead>
+                                            <TableHead>Trả lại</TableHead>
                                             <TableHead>Giá trị đơn</TableHead>
                                             <TableHead>Trạng thái</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {orders?.map((e: any) => (
+                                        {orders.map((e: any) => (
                                             <TableRow key={e.id}>
                                                 <TableCell>{e.product?.name}</TableCell>
                                                 <TableCell>{e.shipper?.firstName} {e.shipper?.lastName}</TableCell>
                                                 <TableCell>{e.quantity}</TableCell>
-                                                <TableCell>{e.price * e.quantity}</TableCell>
+                                                <TableCell>{e.freeShip ? e.freeShip : 0}</TableCell>
+                                                <TableCell>{e.numReturn ? e.numReturn : 0}</TableCell>
+                                                <TableCell>{e.cash}</TableCell>
+                                                <TableCell>
+                                                    <Badge variant={"default"}>
+                                                        {statuses.find((s) => s.id == e.status)?.value}
+                                                    </Badge>
+                                                </TableCell>
 
                                                 <TableCell>
-                                                    <Select defaultValue={e.status?.toString()}
-                                                            onValueChange={value => updateStatus(e.id, value)}>
-                                                        <SelectTrigger id={e.status?.toString()}>
-                                                            <SelectValue/>
-                                                        </SelectTrigger>
-                                                        <SelectContent position="popper">
-                                                            {status.map((status) => (
-                                                                <SelectItem key={status.id}
-                                                                            value={status.id.toString()}>{status.value}</SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button variant="ghost" className="ml-auto">
+                                                                <MoreHorizontal className="ml-2 h-4 w-4"/>
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end">
+                                                            <DropdownMenuItem onClick={event => deleteOrd(e.id)}>Xoá</DropdownMenuItem>
+                                                            {(!user.admin &&
+                                                                <DropdownMenuItem onClick={event => setOrder(e)}>Trả lại</DropdownMenuItem>)}
+                                                            {(user.admin &&
+                                                                <DropdownMenuItem onClick={event => confirm(e.id)}>Xác nhận</DropdownMenuItem>)}
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
                                                 </TableCell>
                                             </TableRow>
                                         ))}
@@ -157,11 +248,17 @@ export default function SettingsPage() {
                                     <TableFooter>
                                         <TableRow>
                                             <TableCell colSpan={2}>Tổng</TableCell>
-                                            <TableCell className="text-right">
+                                            <TableCell>
                                                 {orders.reduce((totalQuantity, order) => totalQuantity + order.quantity, 0)}
                                             </TableCell>
-                                            <TableCell className="text-right">
-                                                {orders.reduce((totalValue, order) => totalValue + order.price * order.quantity, 0)}
+                                            <TableCell>
+                                                {orders.reduce((totalValue, order) => totalValue + order.freeShip, 0)}
+                                            </TableCell>
+                                            <TableCell>
+                                                {orders.reduce((totalValue, order) => totalValue + order.numReturn, 0)}
+                                            </TableCell>
+                                            <TableCell>
+                                                {orders.reduce((totalValue, order) => totalValue + order.cash, 0)}
                                             </TableCell>
                                             <TableCell></TableCell>
                                         </TableRow>
@@ -172,7 +269,29 @@ export default function SettingsPage() {
                     </DashboardShell>
                 </main>
             </div>
+            <AlertDialog open={order !== undefined}>
+                <form className="space-y-8">
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Xác nhận trả lại</AlertDialogTitle>
+                            <div className="grid w-full items-center gap-4 pt-3.5">
+                                <div className="flex flex-col space-y-1.5">
+                                    <Label htmlFor="name">Nhập số lượng trả lại</Label>
+                                    <Input id="quantity" type={"number"}
+                                           onChange={event => setNumReturn(parseInt(event.target.value))}/>
+                                </div>
+                            </div>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel onClick={event => setOrder(undefined)}>Huỷ</AlertDialogCancel>
+                            <AlertDialogAction onClick={event => returnOrder()}>Xác nhận</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </form>
+            </AlertDialog>
         </>
 
     )
 }
+
+

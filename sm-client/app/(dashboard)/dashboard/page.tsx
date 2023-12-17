@@ -7,21 +7,24 @@ import {useEffect, useState} from "react";
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import {getAllProduct, getCategory, getCurrentUser} from "@/lib/session";
+import {deleteProduct, getAllProduct, getCategory, getCurrentUser} from "@/lib/session";
 import {OrderDialog} from "@/app/(dashboard)/dashboard/(action)/OrderDialog";
 import {EditDialog} from "@/app/(dashboard)/dashboard/(action)/EditDialog";
 import {AddDialog} from "@/app/(dashboard)/dashboard/(action)/AddDialog";
-import useSWR from "swr";
 import Nav from "@/app/(marketing)/nav";
 import {DashboardNav} from "@/components/nav";
 import {DashboardConfig} from "@/types";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {LucideClipboardX} from "lucide-react";
+import {Button} from "@/components/ui/button";
+import {toast} from "@/components/ui/use-toast";
+import {deleteCookie, getCookie} from "cookies-next";
+import {useRouter} from "next/navigation";
 
 const dashboardConfig: DashboardConfig = {
     mainNav: [
@@ -55,46 +58,88 @@ const dashboardConfig: DashboardConfig = {
 }
 
 export default function DashboardPage() {
-    const [isAdmin, setAdmin] = useState(false)
-    const [reload, setReload] = useState(true)
-    const [typeSelect, setTypeSelect] = useState<string>('')
+    const [reload, setReload] = useState(false)
+    const [typeSelect, setTypeSelect] = useState<string>('0')
     const [products, setProducts] = useState<Product[]>([])
     const [productTypes, setProductType] = useState<ProductType[]>([])
-    const {data: user, error: userError} = useSWR('getUser', getCurrentUser, {refreshInterval: 0});
+    const [user, setUser] = useState<User>({});
+
+
+    const router = useRouter();
 
     useEffect(() => {
+        if (!getCookie('token')) {
+            router.push("/login")
+        }
+        const fetchUser = async () => {
+            if (!user.id) {
+                const resp = await getCurrentUser();
+                if (resp) {
+                    setUser(resp)
+                } else {
+                    deleteCookie('token')
+                    router.push("/login")
+                }
+            }
+        }
+        fetchUser();
+
         const fetchProductType = async () => {
-            const resp = await getCategory();
-            if (resp) {
-                setProductType(resp)
+            if (productTypes.length == 0) {
+                const resp = await getCategory();
+                if (resp) {
+                    setProductType(resp)
+                }
             }
         }
         fetchProductType();
-        if (user) {
-            const roles = user.roles;
-            const check = roles.some((obj: { name: string; }) => obj.name === "ROLE_ADMIN");
-            setAdmin(check);
-        }
 
-    }, [user]);
+        const fetchProduct = async () => {
+            if (typeSelect) {
+                const resp = await getAllProduct(typeSelect);
+                if (resp?.status == 200) {
+                    setProducts(resp.data)
+                } else {
+                    setProducts([])
+                }
+            }
+        }
+        fetchProduct();
+
+    }, [typeSelect]);
 
     useEffect(() => {
         const fetchProduct = async () => {
-            if (typeSelect === '0')
-                setTypeSelect('')
-            const resp = await getAllProduct(typeSelect);
-            if (resp?.status == 200) {
-                setProducts(resp.data)
-            } else {
-                setProducts([])
+            if (reload) {
+                const resp = await getAllProduct(typeSelect);
+                if (resp?.status == 200) {
+                    setProducts(resp.data)
+                } else {
+                    setProducts([])
+                }
             }
 
             setReload(false)
         }
         fetchProduct();
 
-    }, [typeSelect, reload]);
+    }, [reload]);
 
+
+    const deleteProd = async  (id : any) => {
+        const resp = await deleteProduct(id);
+        if (resp?.status == 200) {
+            setReload(true)
+            return toast({
+                title: "Xoá sản phẩm thành công"
+            })
+        } else {
+            return toast({
+                title: "Lỗi không thể xoá sản phẩm",
+                variant: "destructive"
+            })
+        }
+    }
 
     return (
         <>
@@ -109,12 +154,12 @@ export default function DashboardPage() {
                     <DashboardShell>
                         <div>
                             <DashboardHeader heading="Sản phẩm" text="">
-                                {(isAdmin && <AddDialog productTypes={productTypes} setReload={setReload}/>)}
+                                {(user.admin && <AddDialog productTypes={productTypes} setReload={setReload}/>)}
                             </DashboardHeader>
                         </div>
-                        <div className="flex items-center py-4 w-1/3 ml-1">
+                        <div className="flex items-center py-4 w-1/2 sm:w-1/4 ml-1">
                             <Select onValueChange={value => setTypeSelect(value)}>
-                                <SelectTrigger>
+                                <SelectTrigger >
                                     <SelectValue placeholder={"Tìm theo loại sản phẩm"}/>
                                 </SelectTrigger>
                                 <SelectContent position="popper">
@@ -129,14 +174,15 @@ export default function DashboardPage() {
                         <div className={"overflow-x-auto md:overflow-hidden"}>
                             {
                                 (products && <Table>
-                                    <TableCaption>A list of your recent invoices.</TableCaption>
+
                                     <TableHeader>
                                         <TableRow>
                                             <TableHead>Tên sp</TableHead>
                                             <TableHead>Số lượng</TableHead>
                                             <TableHead>Loại mặt hàng</TableHead>
-                                            <TableHead>Đặt hàng</TableHead>
-                                            {(isAdmin && <TableHead>Sửa thông tin</TableHead>)}
+                                            {(user.shipper && <TableHead>Đặt hàng</TableHead>)}
+                                            {(user.admin && <TableHead>Sửa</TableHead>)}
+                                            {(user.admin && <TableHead>Xoá</TableHead>)}
 
                                         </TableRow>
                                     </TableHeader>
@@ -146,10 +192,12 @@ export default function DashboardPage() {
                                                 <TableCell>{e.name}</TableCell>
                                                 <TableCell>{e.quantity}</TableCell>
                                                 <TableCell>{e.categoryDto?.name}</TableCell>
-                                                <TableCell>
+                                                {(user.shipper && <TableCell>
                                                     <OrderDialog product={e} user={user} setReload={setReload}/>
-                                                </TableCell>
-                                                {(isAdmin && <TableCell><EditDialog product={e} setReload={setReload}/></TableCell>)}
+                                                </TableCell>)}
+
+                                                {(user.admin && <TableCell><EditDialog product={e} setReload={setReload}/></TableCell>)}
+                                                {(user.admin && <TableCell><Button variant="outline" onClick={() => deleteProd(e.id)}><LucideClipboardX/></Button></TableCell>)}
                                             </TableRow>
                                         ))}
                                     </TableBody>

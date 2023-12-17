@@ -1,10 +1,8 @@
 import axios from "axios";
 import {getCookie, setCookie} from "cookies-next";
-import {format} from 'date-fns';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 const tokenType = process.env.NEXT_PUBLIC_TOKEN_TYPE;
-
 
 export const api = axios.create({
     baseURL: apiUrl,
@@ -20,7 +18,7 @@ export async function authenticate(username: string, password: string) {
         setCookie("token", token)
         return token
     } catch (e) {
-        alert("Error authenticate")
+        alert("Nhập sai tên đăng nhập hoặc mật khẩu")
         return null
     }
 }
@@ -59,22 +57,50 @@ export async function getCurrentUser() {
 
 export async function getCategory() {
     try {
-        const session = await api.get("api/category/all/getAllCategories")
-        if (session.status != 200)
-            alert("Error get product type ")
-        return session.data
-
+        const session = await api.get("api/category/getAllCategories")
+        return session?.data
     } catch (e) {
-        alert("Error get product type ")
         return null
     }
 }
 
 export async function getAllProduct(typeSelect: string) {
     try {
-        const s = typeSelect ? '/' + typeSelect : ''
         const headers = getToken()
-        const session = await api.get("api/warehouse/getAllProduct" + s, {headers})
+        if (typeSelect != '0') {
+            const s = '/' + typeSelect;
+            const session = await api.get("api/warehouse/getAllProduct" + s,{headers})
+            return session
+        } else {
+            const session = await api.get("api/warehouse/getAllProduct",{headers})
+            return session
+        }
+    } catch (e) {
+        return null
+    }
+}
+export async function deleteProduct(typeSelect: string) {
+    try {
+        const headers = getToken()
+        const session = await api.delete("/api/warehouse/deleteProduct/" + typeSelect,{headers})
+        return session
+    } catch (e) {
+        return null
+    }
+}
+export async function deleteOrder(typeSelect: string) {
+    try {
+        const headers = getToken()
+        const session = await api.delete("/api/order/deleteOrder/" + typeSelect,{headers})
+        return session
+    } catch (e) {
+        return null
+    }
+}
+export async function confirmOrder(typeSelect: string) {
+    try {
+        const headers = getToken()
+        const session = await api.get("/api/order/confirmOrder/" + typeSelect,{headers})
         return session
     } catch (e) {
         return null
@@ -84,18 +110,16 @@ export async function getAllProduct(typeSelect: string) {
 export async function getAllOrder(body: any) {
     try {
         const headers = getToken()
-        const session = await api.post("/api/order/getAll", body, {headers})
+        const session = await api.post("/api/order/getAll", body,{headers})
         return session?.data
     } catch (e) {
         return null
     }
 }
-
-export async function getReport() {
+export async function getReport(date: string) {
     try {
-        const currentDate: Date = new Date();
         const headers = getToken()
-        const session = await api.get("/api/report/admin/getAllReport/" + format(currentDate, 'yyyyMMdd'), {headers})
+        const session = await api.get("/api/report/admin/getAllReport/" + date, {headers})
         return session?.data
     } catch (e) {
         return null
@@ -105,7 +129,34 @@ export async function getReport() {
 export async function saveProduct(product: Product | undefined) {
     try {
         const headers = getToken()
-        const session = await api.post("api/warehouse/admin/addProduct", product, {headers})
+        const session = await api.post("api/warehouse/addProduct", product, {headers})
+        return session
+    } catch (e) {
+        return null
+    }
+}
+export async function saveCategory(body: any) {
+    try {
+        const headers = getToken()
+        const session = await api.post("api/category/addCategory", body, {headers})
+        return session
+    } catch (e) {
+        return null
+    }
+}
+export async function deleteCategory(body: any) {
+    try {
+        const headers = getToken()
+        const session = await api.delete("api/category/deleteCategory/"+ body, {headers})
+        return session
+    } catch (e) {
+        return null
+    }
+}
+export async function updateProduct(product: any) {
+    try {
+        const headers = getToken()
+        const session = await api.put("api/warehouse/updateProduct", product, {headers})
         return session
     } catch (e) {
         return null
@@ -115,7 +166,7 @@ export async function saveProduct(product: Product | undefined) {
 export async function addOrder(body: any) {
     try {
         const headers = getToken()
-        return await api.post("api/order/all/addOrder", body, {headers})
+        return await api.post("api/order/addOrder", body, {headers})
     } catch (e) {
         return null
     }
@@ -123,8 +174,7 @@ export async function addOrder(body: any) {
 export async function updateOrder(body: any) {
     try {
         const headers = getToken()
-        const session = await api.put("api/order/updateOrder", body, {headers})
-        return session?.data
+        return await api.put("api/order/updateOrder", body, {headers})
     } catch (e) {
         return null
     }
